@@ -1,7 +1,7 @@
 {
-  "name": "express-boiler",
+  "name": "api.start.vizhnay.io",
   "version": "1.0.0",
-  "description": "A minimal ES6+ express app boilerplate, with included authentication!",
+  "description": "A restful API used for saving users' start page links.",
   "scripts": {
     "start": "yarn run build && node dist/lib/server.js",
     "build": "rm -rf ./dist/ && babel src -d dist/lib --ignore 'src/tests/' && yarn build:knexConfig",
@@ -19,7 +19,7 @@
     "yarn": "1.15.0"
   },
   "main": "lib/server.js",
-  "repository": "https://github.com/vzhny/express-boiler",
+  "repository": "https://github.com/vzhny/api.start.vizhnay.io",
   "author": "Diego Vizhnay <diego@vzhny.com> (https://vizhnay.io)",
   "license": "MIT",
   "husky": {
