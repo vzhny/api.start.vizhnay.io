@@ -9,6 +9,7 @@ class Category extends Model {
 
     properties: {
       id: { type: 'serial' },
+      linkId: { type: 'string', unique: true },
       title: { type: 'string', maxLength: 16 },
       url: { type: 'string', unique: true },
       owner: { type: 'string' },
