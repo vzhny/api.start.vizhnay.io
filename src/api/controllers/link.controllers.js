@@ -73,7 +73,7 @@ export const addNewLink = async (req, res) => {
 };
 
 export const getOneLink = async (req, res) => {
-  const { id } = req.params;
+  const { linkId } = req.params;
   const { userId } = res.locals;
 
   const [linkError, link] = await to(
@@ -81,7 +81,7 @@ export const getOneLink = async (req, res) => {
       .select('links.link_id', 'links.url', 'links.title', 'links.owner', 'categories.name as category')
       .join('categories', 'links.category', 'categories.id')
       .where('owner', userId)
-      .andWhere('linkId', id)
+      .andWhere('linkId', linkId)
       .first()
   );
 
