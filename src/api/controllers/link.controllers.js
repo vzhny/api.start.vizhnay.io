@@ -9,7 +9,22 @@ import handleError from '@/api/helpers/handleError';
 
 /* eslint-disable consistent-return */
 
-export const getAllLinks = async (req, res) => {};
+export const getAllLinks = async (req, res) => {
+  const { userId } = res.locals;
+
+  const [error, links] = await to(
+    Link.query()
+      .select('links.url', 'links.name', 'links.owner', 'categories.name as category')
+      .join('categories', 'links.category', 'categories.id')
+      .where('links.owner', userId)
+  );
+
+  if (error) {
+    return handleError(res, 404, "There was an error retrieving the user's links.", error);
+  }
+
+  return res.status(200).json({ links });
+};
 
 export const getOneLink = async (req, res) => {};
 
