@@ -52,10 +52,12 @@ const linkTests = () => {
 
         expect(status).toEqual(200);
         expect(links).toHaveLength(2);
+        expect(firstLink.linkId).toEqual('8bgqqjUrG');
         expect(firstLink.url).toEqual('https://google.com');
         expect(firstLink.title).toEqual('Google');
         expect(firstLink.owner).toEqual('2FIOCbin6');
         expect(firstLink.category).toEqual('Google');
+        expect(secondLink.linkId).toEqual('iU9MAYeN3A');
         expect(secondLink.url).toEqual('https://netflix.com');
         expect(secondLink.title).toEqual('Netflix');
         expect(secondLink.owner).toEqual('2FIOCbin6');
