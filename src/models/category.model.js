@@ -5,7 +5,7 @@ class Category extends Model {
 
   static jsonSchema = {
     type: 'object',
-    required: 'name',
+    required: ['name'],
 
     properties: {
       id: { type: 'serial' },
