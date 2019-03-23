@@ -1,10 +1,9 @@
 import to from 'await-to-js';
 import shortId from 'shortid';
-import findIndex from 'lodash/findIndex';
+import pick from 'lodash/pick';
 import Link from '@/models/link.model';
-import Category from '@/models/category.model';
 import handleError from '@/api/helpers/handleError';
-import formatCategory from '@/api/helpers/formatCategory';
+import handleCategory from '@/api/helpers/handleCategory';
 
 /* eslint-disable consistent-return */
 
@@ -13,7 +12,7 @@ export const getAllLinks = async (req, res) => {
 
   const [linksError, links] = await to(
     Link.query()
-      .select('links.url', 'links.title', 'links.owner', 'categories.name as category', 'links.link_id')
+      .select('links.url', 'links.title', 'categories.name as category', 'links.link_id')
       .join('categories', 'links.category', 'categories.id')
       .where('links.owner', userId)
   );
@@ -28,31 +27,17 @@ export const getAllLinks = async (req, res) => {
 export const addNewLink = async (req, res) => {
   const { userId } = res.locals;
   const { url, title, category } = req.body;
-  const sanitizedCategory = formatCategory(category);
-  let categoryId = null;
 
-  const [categoryError, categories] = await to(Category.query().select());
+  const [categoryError, categoryId] = await to(handleCategory(category));
 
   if (categoryError) {
-    return handleError(res, 400, 'There was an error adding the link, please try again later.', categoryError);
-  }
+    const { message } = categoryError;
 
-  if (sanitizedCategory === '') {
-    return handleError(res, 400, 'Please add a category associated with the link.');
-  }
-
-  const categoryIndex = findIndex(categories, { name: sanitizedCategory });
-
-  if (categoryIndex >= 0) {
-    categoryId = categories[categoryIndex].id;
-  } else {
-    const [addedCategoryError, addedCategory] = await to(Category.query().insert({ name: sanitizedCategory }));
-
-    if (addedCategoryError) {
-      return handleError(res, 400, 'There was an error adding the link, please try again later.', addedCategoryError);
+    if (message === 'Please add a category associated with the link.') {
+      return handleError(res, 400, message, categoryError);
     }
 
-    categoryId = addedCategory.id;
+    return handleError(res, 400, 'There was an error adding the link, please try again later.', categoryError);
   }
 
   const [addedLinkError, addedLink] = await to(
@@ -69,7 +54,9 @@ export const addNewLink = async (req, res) => {
     return handleError(res, 400, 'There was an error adding the link, please try again later.', addedLinkError);
   }
 
-  return res.status(201).json(addedLink);
+  const returnedLink = pick(addedLink, ['linkId', 'url', 'title']);
+
+  return res.status(201).json({ ...returnedLink, category });
 };
 
 export const getOneLink = async (req, res) => {
@@ -78,7 +65,7 @@ export const getOneLink = async (req, res) => {
 
   const [linkError, link] = await to(
     Link.query()
-      .select('links.link_id', 'links.url', 'links.title', 'links.owner', 'categories.name as category')
+      .select('links.link_id', 'links.url', 'links.title', 'categories.name as category')
       .join('categories', 'links.category', 'categories.id')
       .where('owner', userId)
       .andWhere('linkId', linkId)
@@ -96,6 +83,44 @@ export const getOneLink = async (req, res) => {
   return res.status(200).json(link);
 };
 
-export const updateLink = async (req, res) => {};
+export const updateLink = async (req, res) => {
+  const { linkId } = req.params;
+  const { userId } = res.locals;
+
+  const { url, title, category } = req.body;
+
+  const [categoryError, categoryId] = await to(handleCategory(category));
+
+  if (categoryError) {
+    const { message } = categoryError;
+
+    if (message === 'Please add a category associated with the link.') {
+      return handleError(res, 400, message, categoryError);
+    }
+
+    return handleError(res, 400, 'There was an error adding the link, please try again later.', categoryError);
+  }
+
+  const [updateError, updated] = await to(
+    Link.query()
+      .patch({
+        url,
+        title,
+        category: categoryId,
+      })
+      .where('owner', userId)
+      .andWhere('linkId', linkId)
+  );
+
+  if (updateError) {
+    return handleError(res, 404, 'There was an error updating the link.', updateError);
+  }
+
+  if (updated <= 0) {
+    return handleError(res, 401, 'Unauthorized access to specified link.');
+  }
+
+  return res.status(204).json();
+};
 
 export const deleteLink = async (req, res) => {};
