@@ -2,7 +2,7 @@ exports.up = knex => {
   return knex.schema.createTable('links', table => {
     table.increments('id');
     table.string('url').notNullable();
-    table.string('name', 16).notNullable();
+    table.string('title', 16).notNullable();
     table
       .string('owner')
       .references('userId')
