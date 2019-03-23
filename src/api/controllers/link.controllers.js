@@ -72,7 +72,29 @@ export const addNewLink = async (req, res) => {
   return res.status(201).json(addedLink);
 };
 
-export const getOneLink = async (req, res) => {};
+export const getOneLink = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = res.locals;
+
+  const [linkError, link] = await to(
+    Link.query()
+      .select('links.link_id', 'links.url', 'links.title', 'links.owner', 'categories.name as category')
+      .join('categories', 'links.category', 'categories.id')
+      .where('owner', userId)
+      .andWhere('linkId', id)
+      .first()
+  );
+
+  if (linkError) {
+    return handleError(res, 404, 'There was an error retrieving the link.', linkError);
+  }
+
+  if (link === undefined) {
+    return handleError(res, 401, 'Unauthorized access to specified link.');
+  }
+
+  return res.status(200).json(link);
+};
 
 export const updateLink = async (req, res) => {};
 
