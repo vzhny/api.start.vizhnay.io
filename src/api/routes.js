@@ -11,12 +11,12 @@ router.route('/auth/login').post(login);
 
 router.route('/links').get(verifyToken, getAllLinks);
 
-router.route('/links/:id').get(verifyToken, getOneLink);
-
 router.route('/links').post(verifyToken, addNewLink);
 
-router.route('/links').put(verifyToken, updateLink);
+router.route('/links/:id').get(verifyToken, getOneLink);
 
-router.route('/links').delete(verifyToken, deleteLink);
+router.route('/links/:id').put(verifyToken, updateLink);
+
+router.route('/links/:id').delete(verifyToken, deleteLink);
 
 export default router;
