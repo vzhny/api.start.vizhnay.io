@@ -1,4 +1,5 @@
 import request from 'supertest';
+import shortId from 'shortid';
 import app from '@/app';
 import server from '@/server';
 
@@ -55,12 +56,10 @@ const linkTests = () => {
         expect(firstLink.linkId).toEqual('8bgqqjUrG');
         expect(firstLink.url).toEqual('https://google.com');
         expect(firstLink.title).toEqual('Google');
-        expect(firstLink.owner).toEqual('2FIOCbin6');
         expect(firstLink.category).toEqual('Google');
         expect(secondLink.linkId).toEqual('iU9MAYeN3A');
         expect(secondLink.url).toEqual('https://netflix.com');
         expect(secondLink.title).toEqual('Netflix');
-        expect(secondLink.owner).toEqual('2FIOCbin6');
         expect(secondLink.category).toEqual('Entertainment');
 
         done();
@@ -86,14 +85,13 @@ const linkTests = () => {
           .send(newLink)
           .set('authorization', token);
 
-        const { url, title, category, owner, id } = body;
+        const { linkId, url, title, category } = body;
 
         expect(status).toEqual(201);
+        expect(shortId.isValid(linkId)).toBeTruthy();
         expect(url).toEqual('https://adobe.com');
         expect(title).toEqual('Adobe');
-        expect(category).toEqual(4);
-        expect(owner).toEqual('2FIOCbin6');
-        expect(id).toEqual(5);
+        expect(category).toEqual('Design');
 
         done();
       } catch (error) {
@@ -172,9 +170,11 @@ const linkTests = () => {
         done(message);
       }
     });
+
+    // TODO: add a test to test adding a duplicate link
   });
 
-  describe('GET /api/links/:id', () => {
+  describe('GET /api/links/:linkId', () => {
     it('should successfully retrieve the specified link', async done => {
       const linkId = '8bgqqjUrG';
 
@@ -183,13 +183,12 @@ const linkTests = () => {
           .get(`/api/links/${linkId}`)
           .set('authorization', token);
 
-        const { linkId: id, url, title, owner, category } = body;
+        const { linkId: id, url, title, category } = body;
 
         expect(status).toEqual(200);
         expect(id).toEqual(linkId);
         expect(url).toEqual('https://google.com');
         expect(title).toEqual('Google');
-        expect(owner).toEqual('2FIOCbin6');
         expect(category).toEqual('Google');
 
         done();
@@ -201,6 +200,77 @@ const linkTests = () => {
     });
 
     it('should return an error when trying to retrieve a link not created by the user', async done => {
+      const linkId = 'XIe7pPTF8P';
+
+      try {
+        const { status, body } = await request(app)
+          .get(`/api/links/${linkId}`)
+          .set('authorization', token);
+
+        const { message } = body;
+
+        expect(status).toEqual(401);
+        expect(message).toEqual('Unauthorized access to specified link.');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+  });
+
+  describe('PUT /api/links/:linkId', () => {
+    it('should successfully update the specified link', async done => {
+      const linkId = '8bgqqjUrG';
+      const updatedLink = {
+        url: 'https://www.google.com/imghp?hl=en&tab=wi',
+        title: 'Google Images',
+        category: 'Search',
+      };
+
+      try {
+        const { status } = await request(app)
+          .put(`/api/links/${linkId}`)
+          .send(updatedLink)
+          .set('authorization', token);
+
+        expect(status).toEqual(204);
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should successfully reflect the previous update when retrieving the link', async done => {
+      const linkId = '8bgqqjUrG';
+
+      try {
+        const { status, body } = await request(app)
+          .get(`/api/links/${linkId}`)
+          .set('authorization', token);
+
+        const { linkId: id, url, title, category } = body;
+
+        expect(status).toEqual(200);
+        expect(id).toEqual(linkId);
+        expect(url).toEqual('https://www.google.com/imghp?hl=en&tab=wi');
+        expect(title).toEqual('Google Images');
+        expect(category).toEqual('Search');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should return an error when trying to update a link not created by the user', async done => {
       const linkId = 'XIe7pPTF8P';
 
       try {
