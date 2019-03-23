@@ -26,9 +26,9 @@ export const getAllLinks = async (req, res) => {
   return res.status(200).json({ links });
 };
 
-export const getOneLink = async (req, res) => {};
-
 export const addNewLink = async (req, res) => {};
+
+export const getOneLink = async (req, res) => {};
 
 export const updateLink = async (req, res) => {};
 
