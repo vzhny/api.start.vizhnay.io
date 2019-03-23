@@ -173,6 +173,54 @@ const linkTests = () => {
       }
     });
   });
+
+  describe('GET /api/links/:id', () => {
+    it('should successfully retrieve the specified link', async done => {
+      const linkId = '8bgqqjUrG';
+
+      try {
+        const { status, body } = await request(app)
+          .get(`/api/links/${linkId}`)
+          .set('authorization', token);
+
+        const { linkId: id, url, title, owner, category } = body;
+
+        expect(status).toEqual(200);
+        expect(id).toEqual(linkId);
+        expect(url).toEqual('https://google.com');
+        expect(title).toEqual('Google');
+        expect(owner).toEqual('2FIOCbin6');
+        expect(category).toEqual('Google');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should return an error when trying to retrieve a link not created by the user', async done => {
+      const linkId = 'XIe7pPTF8P';
+
+      try {
+        const { status, body } = await request(app)
+          .get(`/api/links/${linkId}`)
+          .set('authorization', token);
+
+        const { message } = body;
+
+        expect(status).toEqual(401);
+        expect(message).toEqual('Unauthorized access to specified link.');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+  });
 };
 
 export default linkTests;
