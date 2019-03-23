@@ -38,7 +38,7 @@ const rollbackAndMigrate = async () => {
     await knex.migrate.rollback();
     await knex.migrate.latest();
 
-    if (env === 'development') {
+    if (env !== 'production') {
       await knex.seed.run();
 
       console.log('Successfully seeded the database.');
