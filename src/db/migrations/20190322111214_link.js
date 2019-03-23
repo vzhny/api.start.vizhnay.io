@@ -1,6 +1,7 @@
 exports.up = knex => {
   return knex.schema.createTable('links', table => {
     table.increments('id');
+    table.string('linkId').notNullable();
     table.string('url').notNullable();
     table.string('title', 16).notNullable();
     table
@@ -18,6 +19,7 @@ exports.up = knex => {
       .defaultTo(knex.fn.now())
       .notNullable();
 
+    table.unique('linkId');
     table.unique('url');
   });
 };
