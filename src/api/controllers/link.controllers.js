@@ -1,4 +1,5 @@
 import to from 'await-to-js';
+import shortId from 'shortid';
 import findIndex from 'lodash/findIndex';
 import Link from '@/models/link.model';
 import Category from '@/models/category.model';
@@ -12,7 +13,7 @@ export const getAllLinks = async (req, res) => {
 
   const [linksError, links] = await to(
     Link.query()
-      .select('links.url', 'links.title', 'links.owner', 'categories.name as category')
+      .select('links.url', 'links.title', 'links.owner', 'categories.name as category', 'links.link_id')
       .join('categories', 'links.category', 'categories.id')
       .where('links.owner', userId)
   );
@@ -56,6 +57,7 @@ export const addNewLink = async (req, res) => {
 
   const [addedLinkError, addedLink] = await to(
     Link.query().insert({
+      linkId: shortId.generate(),
       url,
       title,
       category: categoryId,
