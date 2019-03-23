@@ -1,7 +1,7 @@
 import { Model } from 'objection';
 
 class Category extends Model {
-  static tableName = 'users';
+  static tableName = 'links';
 
   static jsonSchema = {
     type: 'object',
