@@ -10,9 +10,7 @@ const formatCategory = category => {
 
 export default category => {
   return new Promise(async (resolve, reject) => {
-    if (category === undefined) {
-      reject(new Error('Please add a category associated with the link.'));
-    } else if (typeof category !== 'string') {
+    if (category === undefined || typeof category !== 'string') {
       reject(new Error('Please add a category associated with the link.'));
     } else {
       const sanitizedCategory = formatCategory(category);
