@@ -51,6 +51,11 @@ export const addNewLink = async (req, res) => {
   );
 
   if (addedLinkError) {
+    const { constraint } = addedLinkError;
+
+    if (constraint === 'links_url_unique') {
+      return handleError(res, 400, 'Cannot add a duplicate link, please update the url and try again.', addedLinkError);
+    }
     return handleError(res, 400, 'There was an error adding the link, please try again later.', addedLinkError);
   }
 
@@ -123,4 +128,24 @@ export const updateLink = async (req, res) => {
   return res.status(204).json();
 };
 
-export const deleteLink = async (req, res) => {};
+export const deleteLink = async (req, res) => {
+  const { linkId } = req.params;
+  const { userId } = res.locals;
+
+  const [deleteError, deleted] = await to(
+    Link.query()
+      .delete()
+      .where('owner', userId)
+      .andWhere('linkId', linkId)
+  );
+
+  if (deleteError) {
+    return handleError(res, 404, 'There was an error deleting the link.', deleteError);
+  }
+
+  if (deleted <= 0) {
+    return handleError(res, 401, 'Unauthorized access to specified link.');
+  }
+
+  return res.status(204).json();
+};
