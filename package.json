@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "A restful API used for saving users' start page links.",
   "scripts": {
-    "start": "yarn run build && node dist/lib/server.js",
+    "start:from-build": "yarn run build && node dist/lib/server.js",
     "build": "rm -rf ./dist/ && babel src -d dist/lib --ignore 'src/tests/' && yarn build:knexConfig",
     "build:knexConfig": "babel ./knexfile.js -d dist",
     "babel-node": "./node_modules/@babel/node/bin/babel-node.js",
-    "start:es6": "NODE_ENV=production yarn babel-node src/server.js",
+    "start": "NODE_ENV=production yarn babel-node src/server.js",
     "dev": "NODE_ENV=development nodemon --exec babel-node src/server.js",
     "knex": "yarn babel-node ./node_modules/knex/bin/cli.js",
     "coveralls": "./node_modules/coveralls/bin/coveralls.js",
