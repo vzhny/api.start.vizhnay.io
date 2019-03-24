@@ -69,6 +69,42 @@ const linkTests = () => {
         done(message);
       }
     });
+
+    it('should return an error if an invalid authorization token is sent', async done => {
+      try {
+        const { status, body } = await request(app)
+          .get('/api/links')
+          .set('authorization', 'Bearer this_is_invalid');
+
+        const { message } = body;
+
+        expect(status).toEqual(401);
+        expect(message).toEqual('Failed to authenticate the provided token.');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should return an error if no authorization token is sent', async done => {
+      try {
+        const { status, body } = await request(app).get('/api/links');
+
+        const { message } = body;
+
+        expect(status).toEqual(400);
+        expect(message).toEqual('No authorization token was provided.');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
   });
 
   describe('POST /api/links', () => {
@@ -213,7 +249,7 @@ const linkTests = () => {
           },
         };
 
-        expect(status).toEqual(400);
+        expect(status).toEqual(500);
         expect(message).toEqual('There was an error adding the link, please try again later.');
         expect(titleDetails).toEqual(expectedTitleDetails);
         expect(urlDetails).toEqual(expectedUrlDetails);
@@ -290,6 +326,32 @@ const linkTests = () => {
           .set('authorization', token);
 
         expect(status).toEqual(204);
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should return an error if there is no category field in the updated link', async done => {
+      try {
+        const linkId = '8bgqqjUrG';
+        const updatedLink = {
+          url: 'https://www.google.com/imghp?hl=en&tab=wi',
+          title: 'Google Images',
+        };
+
+        const { status, body } = await request(app)
+          .put(`/api/links/${linkId}`)
+          .send(updatedLink)
+          .set('authorization', token);
+
+        const { message } = body;
+
+        expect(status).toEqual(400);
+        expect(message).toEqual('Please add a category associated with the link.');
 
         done();
       } catch (error) {

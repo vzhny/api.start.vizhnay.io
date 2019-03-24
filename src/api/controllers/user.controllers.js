@@ -15,7 +15,7 @@ export const register = async (req, res) => {
     return handleError(res, 400, 'Please enter a password with a length of 6 or more characters.');
   }
 
-  const [error, user] = await to(
+  const [userError, user] = await to(
     User.query().insert({
       userId: shortId.generate(),
       email,
@@ -23,8 +23,8 @@ export const register = async (req, res) => {
     })
   );
 
-  if (error) {
-    return handleError(res, 400, 'There was an error registering, please try again later.', error);
+  if (userError) {
+    return handleError(res, 500, 'There was an error registering, please try again later.', userError);
   }
 
   const { userId } = user;
@@ -41,15 +41,15 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
-  const [error, user] = await to(
+  const [userError, user] = await to(
     User.query()
       .select()
       .where('email', email)
       .first()
   );
 
-  if (error) {
-    return handleError(res, 404, 'Could not find user or wrong password. Please try again.', error);
+  if (userError) {
+    return handleError(res, 404, 'Could not find user or wrong password. Please try again.', userError);
   }
 
   if (!user) {

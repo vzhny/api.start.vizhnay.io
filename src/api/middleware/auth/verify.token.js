@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     didNotEncounterError = false;
 
     const message = 'No authorization token was provided.';
-    return handleError(res, 403, message);
+    return handleError(res, 400, message);
   }
 
   // eslint-disable-next-line
@@ -22,7 +22,7 @@ const verifyToken = (req, res, next) => {
       didNotEncounterError = false;
 
       const message = 'Failed to authenticate the provided token.';
-      return handleError(res, 500, message);
+      return handleError(res, 401, message);
     }
 
     res.locals.userId = decoded.userId;

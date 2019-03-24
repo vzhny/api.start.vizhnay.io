@@ -18,7 +18,7 @@ export const getAllLinks = async (req, res) => {
   );
 
   if (linksError) {
-    return handleError(res, 404, "There was an error retrieving the user's links.", linksError);
+    return handleError(res, 500, "There was an error retrieving the user's links.", linksError);
   }
 
   return res.status(200).json({ links });
@@ -37,7 +37,7 @@ export const addNewLink = async (req, res) => {
       return handleError(res, 400, message, categoryError);
     }
 
-    return handleError(res, 400, 'There was an error adding the link, please try again later.', categoryError);
+    return handleError(res, 500, 'There was an error adding the link, please try again later.', categoryError);
   }
 
   const [addedLinkError, addedLink] = await to(
@@ -56,7 +56,7 @@ export const addNewLink = async (req, res) => {
     if (constraint === 'links_url_unique') {
       return handleError(res, 400, 'Cannot add a duplicate link, please update the url and try again.', addedLinkError);
     }
-    return handleError(res, 400, 'There was an error adding the link, please try again later.', addedLinkError);
+    return handleError(res, 500, 'There was an error adding the link, please try again later.', addedLinkError);
   }
 
   const returnedLink = pick(addedLink, ['linkId', 'url', 'title']);
@@ -78,7 +78,7 @@ export const getOneLink = async (req, res) => {
   );
 
   if (linkError) {
-    return handleError(res, 404, 'There was an error retrieving the link.', linkError);
+    return handleError(res, 500, 'There was an error retrieving the link.', linkError);
   }
 
   if (link === undefined) {
@@ -94,16 +94,14 @@ export const updateLink = async (req, res) => {
 
   const { url, title, category } = req.body;
 
+  if (category === undefined) {
+    return handleError(res, 400, 'Please add a category associated with the link.');
+  }
+
   const [categoryError, categoryId] = await to(handleCategory(category));
 
   if (categoryError) {
-    const { message } = categoryError;
-
-    if (message === 'Please add a category associated with the link.') {
-      return handleError(res, 400, message, categoryError);
-    }
-
-    return handleError(res, 400, 'There was an error adding the link, please try again later.', categoryError);
+    return handleError(res, 500, 'There was an error adding the link, please try again later.', categoryError);
   }
 
   const [updateError, updated] = await to(
@@ -118,7 +116,7 @@ export const updateLink = async (req, res) => {
   );
 
   if (updateError) {
-    return handleError(res, 404, 'There was an error updating the link.', updateError);
+    return handleError(res, 500, 'There was an error updating the link.', updateError);
   }
 
   if (updated <= 0) {
@@ -140,7 +138,7 @@ export const deleteLink = async (req, res) => {
   );
 
   if (deleteError) {
-    return handleError(res, 404, 'There was an error deleting the link.', deleteError);
+    return handleError(res, 500, 'There was an error deleting the link.', deleteError);
   }
 
   if (deleted <= 0) {
