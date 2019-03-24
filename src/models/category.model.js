@@ -1,11 +1,11 @@
 import { Model } from 'objection';
 
 class Category extends Model {
-  static tableName = 'users';
+  static tableName = 'categories';
 
   static jsonSchema = {
     type: 'object',
-    required: 'name',
+    required: ['name'],
 
     properties: {
       id: { type: 'serial' },

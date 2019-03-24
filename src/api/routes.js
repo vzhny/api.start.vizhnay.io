@@ -1,20 +1,22 @@
 import express from 'express';
 import { register, login } from '@/api/controllers/user.controllers';
+import { getAllLinks, getOneLink, addNewLink, updateLink, deleteLink } from '@/api/controllers/link.controllers';
 import verifyToken from '@/api/middleware/auth/verify.token';
 
 const router = express.Router();
 
-// POST register route
 router.route('/auth/register').post(register);
 
-// POST login route
 router.route('/auth/login').post(login);
 
-// POST example authenticated route
-router.route('/authenticated').post(verifyToken, (req, res) => {
-  return res.status(200).json({
-    message: 'Authenticated the user successfully!',
-  });
-});
+router.route('/links').get(verifyToken, getAllLinks);
+
+router.route('/links').post(verifyToken, addNewLink);
+
+router.route('/links/:linkId').get(verifyToken, getOneLink);
+
+router.route('/links/:linkId').put(verifyToken, updateLink);
+
+router.route('/links/:linkId').delete(verifyToken, deleteLink);
 
 export default router;

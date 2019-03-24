@@ -17,6 +17,7 @@ module.exports = {
     client,
     connection,
     migrations,
+    seeds,
     ...knexSnakeCaseMappers(),
   },
   production: {

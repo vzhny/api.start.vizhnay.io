@@ -12,9 +12,7 @@ export const register = async (req, res) => {
   const { email, password } = req.body;
 
   if (password.length <= 6) {
-    const message = 'Please enter a password with a length of 6 or more characters.';
-
-    return handleError(res, 400, message);
+    return handleError(res, 400, 'Please enter a password with a length of 6 or more characters.');
   }
 
   const [error, user] = await to(
@@ -26,8 +24,7 @@ export const register = async (req, res) => {
   );
 
   if (error) {
-    const message = 'There was an error registering, please try again later.';
-    return handleError(res, 400, message, error);
+    return handleError(res, 400, 'There was an error registering, please try again later.', error);
   }
 
   const { userId } = user;
@@ -43,7 +40,6 @@ export const register = async (req, res) => {
 // POST login route controller
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  let message = '';
 
   const [error, user] = await to(
     User.query()
@@ -53,13 +49,11 @@ export const login = async (req, res) => {
   );
 
   if (error) {
-    message = 'Could not find user or wrong password. Please try again.';
-    return handleError(res, 404, message, error);
+    return handleError(res, 404, 'Could not find user or wrong password. Please try again.', error);
   }
 
   if (!user) {
-    message = 'Could not find user or wrong password. Please try again.';
-    return handleError(res, 404, message);
+    return handleError(res, 404, 'Could not find user or wrong password. Please try again.');
   }
 
   const { userId } = user;
@@ -73,6 +67,5 @@ export const login = async (req, res) => {
     });
   }
 
-  message = 'Could not find user or wrong password. Please try again.';
-  return handleError(res, 404, message);
+  return handleError(res, 404, 'Could not find user or wrong password. Please try again.');
 };

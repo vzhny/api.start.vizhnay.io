@@ -9,7 +9,7 @@ class User extends Model {
 
     properties: {
       id: { type: 'serial' },
-      userId: { type: 'string' },
+      userId: { type: 'string', unique: true },
       email: { type: 'string', unique: true, maxLength: 32 },
       password: { type: 'string' },
       createdAt: { type: 'timestamptz' },
