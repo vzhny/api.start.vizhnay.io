@@ -101,6 +101,35 @@ const linkTests = () => {
       }
     });
 
+    it('should successfully reflect the previous addition when retrieving all links', async done => {
+      try {
+        const { status, body } = await request(app)
+          .get('/api/links')
+          .set('authorization', token);
+
+        const { links } = body;
+        const [firstLink, secondLink, thirdLink] = links;
+
+        expect(status).toEqual(200);
+        expect(links).toHaveLength(3);
+        expect(firstLink.url).toEqual('https://google.com');
+        expect(firstLink.title).toEqual('Google');
+        expect(firstLink.category).toEqual('Google');
+        expect(secondLink.url).toEqual('https://netflix.com');
+        expect(secondLink.title).toEqual('Netflix');
+        expect(secondLink.category).toEqual('Entertainment');
+        expect(thirdLink.url).toEqual('https://adobe.com');
+        expect(thirdLink.title).toEqual('Adobe');
+        expect(thirdLink.category).toEqual('Design');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
     it('should return an error if there is no category field in the added link', async done => {
       try {
         const newLink = {
@@ -117,6 +146,32 @@ const linkTests = () => {
 
         expect(status).toEqual(400);
         expect(message).toEqual('Please add a category associated with the link.');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should return an error when attempting to add a duplicate link', async done => {
+      try {
+        const newLink = {
+          url: 'https://google.com',
+          title: 'Google',
+          category: 'Google',
+        };
+
+        const { status, body } = await request(app)
+          .post('/api/links')
+          .send(newLink)
+          .set('authorization', token);
+
+        const { message } = body;
+
+        expect(status).toEqual(400);
+        expect(message).toEqual('Cannot add a duplicate link, please update the url and try again.');
 
         done();
       } catch (error) {
@@ -170,8 +225,6 @@ const linkTests = () => {
         done(message);
       }
     });
-
-    // TODO: add a test to test adding a duplicate link
   });
 
   describe('GET /api/links/:linkId', () => {
@@ -271,6 +324,73 @@ const linkTests = () => {
     });
 
     it('should return an error when trying to update a link not created by the user', async done => {
+      const linkId = 'XIe7pPTF8P';
+
+      try {
+        const { status, body } = await request(app)
+          .get(`/api/links/${linkId}`)
+          .set('authorization', token);
+
+        const { message } = body;
+
+        expect(status).toEqual(401);
+        expect(message).toEqual('Unauthorized access to specified link.');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+  });
+
+  describe('DELETE /api/links/:linkId', () => {
+    it('should successfully delete the specified link', async done => {
+      const linkId = '8bgqqjUrG';
+
+      try {
+        const { status } = await request(app)
+          .delete(`/api/links/${linkId}`)
+          .set('authorization', token);
+
+        expect(status).toEqual(204);
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should successfully reflect the previous deletion when retrieving all links', async done => {
+      try {
+        const { status, body } = await request(app)
+          .get('/api/links')
+          .set('authorization', token);
+
+        const { links } = body;
+        const [firstLink, secondLink] = links;
+
+        expect(status).toEqual(200);
+        expect(links).toHaveLength(2);
+        expect(firstLink.url).toEqual('https://netflix.com');
+        expect(firstLink.title).toEqual('Netflix');
+        expect(firstLink.category).toEqual('Entertainment');
+        expect(secondLink.url).toEqual('https://adobe.com');
+        expect(secondLink.title).toEqual('Adobe');
+        expect(secondLink.category).toEqual('Design');
+
+        done();
+      } catch (error) {
+        const { message } = error;
+
+        done(message);
+      }
+    });
+
+    it('should return an error when trying to delete a link not created by the user', async done => {
       const linkId = 'XIe7pPTF8P';
 
       try {
