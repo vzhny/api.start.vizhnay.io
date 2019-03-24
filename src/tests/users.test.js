@@ -45,7 +45,7 @@ const userTests = () => {
           .post('/api/auth/register')
           .send(userInformation);
 
-        expect(status).toEqual(400);
+        expect(status).toEqual(500);
 
         done();
       } catch (error) {
