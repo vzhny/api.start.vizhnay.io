@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
 
-exports.seed = knex => {
-  return knex('users')
+exports.seed = knex =>
+  knex('users')
     .del()
-    .then(() => {
-      return knex('users').insert([
+    .then(() =>
+      knex('users').insert([
         {
           userId: '2FIOCbin6',
           email: 'jake@bk99.gov',
@@ -15,6 +15,5 @@ exports.seed = knex => {
           email: 'amy@bk99.gov',
           password: bcrypt.hashSync('I_love_Jake', 10),
         },
-      ]);
-    });
-};
+      ])
+    );

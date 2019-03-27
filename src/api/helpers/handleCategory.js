@@ -8,8 +8,8 @@ const formatCategory = category => {
   return `${trimmedCategory.charAt(0).toUpperCase()}${trimmedCategory.slice(1)}`;
 };
 
-export default category => {
-  return new Promise(async (resolve, reject) => {
+export default category =>
+  new Promise(async (resolve, reject) => {
     if (category === undefined || typeof category !== 'string') {
       reject(new Error('Please add a category associated with the link.'));
     } else {
@@ -39,4 +39,3 @@ export default category => {
       resolve(categoryId);
     }
   });
-};
