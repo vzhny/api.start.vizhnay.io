@@ -2,6 +2,9 @@
 
 ![Travis (.org)](https://img.shields.io/travis/vzhny/api.start.vizhnay.io.svg?style=for-the-badge)
 ![Coveralls github](https://img.shields.io/coveralls/github/vzhny/api.start.vizhnay.io.svg?style=for-the-badge)
+![David](https://img.shields.io/david/vzhny/api.start.vizhnay.io.svg?color=%232B7D0C&style=for-the-badge)
+![David](https://img.shields.io/david/dev/vzhny/api.start.vizhnay.io.svg?color=%232B7D0C&style=for-the-badge)
+![Codacy grade](https://img.shields.io/codacy/grade/e2807a15c82d430dbca7ad84f17e36da.svg?color=%232B7D0C&style=for-the-badge)
 
 > A restful API used for saving users' start page links.
 
