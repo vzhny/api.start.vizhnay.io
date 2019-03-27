@@ -1,5 +1,5 @@
-exports.up = knex => {
-  return knex.schema.createTable('categories', table => {
+exports.up = knex =>
+  knex.schema.createTable('categories', table => {
     table.increments('id');
     table.string('name', 24).notNullable();
     table
@@ -9,6 +9,5 @@ exports.up = knex => {
 
     table.unique('name');
   });
-};
 
 exports.down = knex => knex.schema.dropTable('categories');
