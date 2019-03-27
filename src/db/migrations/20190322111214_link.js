@@ -1,5 +1,5 @@
-exports.up = knex => {
-  return knex.schema.createTable('links', table => {
+exports.up = knex =>
+  knex.schema.createTable('links', table => {
     table.increments('id');
     table.string('linkId').notNullable();
     table.string('url').notNullable();
@@ -22,6 +22,5 @@ exports.up = knex => {
     table.unique('linkId');
     table.unique('url');
   });
-};
 
 exports.down = knex => knex.schema.dropTable('links');
