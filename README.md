@@ -14,30 +14,46 @@ The link routes are only accessible to users that are currently logged in.
 
 **/api/links**
 
-- GET - Retrieves all links created by the user
-  - On success, returns an array of links
+GET - Retrieves all links created by the user, sorted by their categories. On success, returns an array of links.
 
 ```json
 {
   "links": [
     {
-      "url": "https://google.com",
-      "title": "Google",
       "category": "Google",
-      "linkId": "8bgqqjUrG"
+      "links": [
+        {
+          "title": "Google",
+          "url": "https://google.com",
+          "linkId": "8bgqqjUrG"
+        }
+      ]
     },
     {
-      "url": "https://netflix.com",
-      "title": "Netflix",
       "category": "Entertainment",
-      "linkId": "iU9MAYeN3A"
+      "links": [
+        {
+          "title": "Netflix",
+          "url": "https://netflix.com",
+          "linkId": "iU9MAYeN3A"
+        }
+      ]
     }
   ]
 }
 ```
 
-- POST - Creates one link
-  - On success, returns the added link
+POST - Creates one link using the following payload format:
+
+```json
+{
+  "title": "link-title",
+  "url": "link-url",
+  "category": "link-category"
+}
+```
+
+On success, returns the added link.
 
 ```json
 {
@@ -50,8 +66,7 @@ The link routes are only accessible to users that are currently logged in.
 
 **/api/links/:linkId**
 
-- GET - Retrieves the specific link with the provided ID
-  - On success, returns the specified link
+GET - Retrieves the specific link with the provided ID. On success, returns the specified link.
 
 ```json
 {
@@ -62,15 +77,22 @@ The link routes are only accessible to users that are currently logged in.
 }
 ```
 
-- PUT - Updates the specific with the provided ID parameterlink
-  - On success, no returned JSON, as per REST specs
-- DELETE - Deletes the specific with the provided ID parameterlink
-  - On success, no returned JSON, as per REST specs
+PUT - Updates the specific with the provided ID parameterlink. On success, no returned JSON, as per REST specs.
+
+DELETE - Deletes the specific with the provided ID parameterlink. On success, no returned JSON, as per REST specs.
 
 **/api/auth/register**
 
-- POST - Registers a new user
-  - On success, returns the user's email and an auth token
+POST - Registers a new user using the following payload format:
+
+```json
+{
+  "email": "users-email",
+  "password": "users-password"
+}
+```
+
+On success, returns the user's email and an auth token.
 
 ```json
 {
@@ -81,8 +103,16 @@ The link routes are only accessible to users that are currently logged in.
 
 **/api/auth/login**
 
-- POST - Logs in an existing user
-  - On success, returns the user's email and an auth tokent
+POST - Logs in an existing user using the following payload format:
+
+```json
+{
+  "email": "users-email",
+  "password": "users-password"
+}
+```
+
+On success, returns the user's email and an auth tokent
 
 ```json
 {
