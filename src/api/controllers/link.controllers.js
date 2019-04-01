@@ -57,11 +57,6 @@ export const addNewLink = async (req, res) => {
   );
 
   if (addedLinkError) {
-    const { constraint } = addedLinkError;
-
-    if (constraint === 'links_url_unique') {
-      return handleError(res, 400, 'Cannot add a duplicate link, please update the url and try again.', addedLinkError);
-    }
     return handleError(res, 500, 'There was an error adding the link, please try again later.', addedLinkError);
   }
 
