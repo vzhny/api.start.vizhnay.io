@@ -4,6 +4,8 @@ import pick from 'lodash/pick';
 import Link from '@/models/link.model';
 import handleError from '@/api/helpers/handleError';
 import handleCategory from '@/api/helpers/handleCategory';
+import retrieveCategories from '@/api/helpers/retrieveCategories';
+import categorizeLinks from '@/api/helpers/categorizeLinks';
 
 /* eslint-disable consistent-return */
 
@@ -21,7 +23,11 @@ export const getAllLinks = async (req, res) => {
     return handleError(res, 500, "There was an error retrieving the user's links.", linksError);
   }
 
-  return res.status(200).json({ links });
+  const categories = retrieveCategories(links);
+
+  const categorizedLinks = categorizeLinks(links, categories);
+
+  return res.status(200).json({ links: categorizedLinks });
 };
 
 export const addNewLink = async (req, res) => {
