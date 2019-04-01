@@ -11,7 +11,7 @@ class Category extends Model {
       id: { type: 'serial' },
       linkId: { type: 'string', unique: true },
       title: { type: 'string', maxLength: 16 },
-      url: { type: 'string', unique: true },
+      url: { type: 'string' },
       owner: { type: 'string' },
       category: { type: 'integer' },
       createdAt: { type: 'timestamptz' },

@@ -49,18 +49,28 @@ const linkTests = () => {
           .set('authorization', token);
 
         const { links } = body;
-        const [firstLink, secondLink] = links;
+        const [
+          { category: firstCategory, links: firstSetOfLinks },
+          { category: secondCategory, links: secondSetOfLinks },
+        ] = links;
+
+        const [firstLink] = firstSetOfLinks;
+        const [secondLink] = secondSetOfLinks;
 
         expect(status).toEqual(200);
         expect(links).toHaveLength(2);
+
+        expect(firstCategory).toEqual('Google');
+        expect(firstSetOfLinks).toHaveLength(1);
         expect(firstLink.linkId).toEqual('8bgqqjUrG');
         expect(firstLink.url).toEqual('https://google.com');
         expect(firstLink.title).toEqual('Google');
-        expect(firstLink.category).toEqual('Google');
+
+        expect(secondCategory).toEqual('Entertainment');
+        expect(secondSetOfLinks).toHaveLength(1);
         expect(secondLink.linkId).toEqual('iU9MAYeN3A');
         expect(secondLink.url).toEqual('https://netflix.com');
         expect(secondLink.title).toEqual('Netflix');
-        expect(secondLink.category).toEqual('Entertainment');
 
         done();
       } catch (error) {
@@ -144,19 +154,35 @@ const linkTests = () => {
           .set('authorization', token);
 
         const { links } = body;
-        const [firstLink, secondLink, thirdLink] = links;
+        const [
+          { category: firstCategory, links: firstSetOfLinks },
+          { category: secondCategory, links: secondSetOfLinks },
+          { category: thirdCategory, links: thirdSetOfLinks },
+        ] = links;
+
+        const [firstLink] = firstSetOfLinks;
+        const [secondLink] = secondSetOfLinks;
+        const [thirdLink] = thirdSetOfLinks;
 
         expect(status).toEqual(200);
         expect(links).toHaveLength(3);
+
+        expect(firstCategory).toEqual('Google');
+        expect(firstSetOfLinks).toHaveLength(1);
+        expect(firstLink.linkId).toEqual('8bgqqjUrG');
         expect(firstLink.url).toEqual('https://google.com');
         expect(firstLink.title).toEqual('Google');
-        expect(firstLink.category).toEqual('Google');
+
+        expect(secondCategory).toEqual('Entertainment');
+        expect(secondSetOfLinks).toHaveLength(1);
+        expect(secondLink.linkId).toEqual('iU9MAYeN3A');
         expect(secondLink.url).toEqual('https://netflix.com');
         expect(secondLink.title).toEqual('Netflix');
-        expect(secondLink.category).toEqual('Entertainment');
+
+        expect(thirdCategory).toEqual('Design');
+        expect(thirdSetOfLinks).toHaveLength(1);
         expect(thirdLink.url).toEqual('https://adobe.com');
         expect(thirdLink.title).toEqual('Adobe');
-        expect(thirdLink.category).toEqual('Design');
 
         done();
       } catch (error) {
@@ -182,32 +208,6 @@ const linkTests = () => {
 
         expect(status).toEqual(400);
         expect(message).toEqual('Please add a category associated with the link.');
-
-        done();
-      } catch (error) {
-        const { message } = error;
-
-        done(message);
-      }
-    });
-
-    it('should return an error when attempting to add a duplicate link', async done => {
-      try {
-        const newLink = {
-          url: 'https://google.com',
-          title: 'Google',
-          category: 'Google',
-        };
-
-        const { status, body } = await request(app)
-          .post('/api/links')
-          .send(newLink)
-          .set('authorization', token);
-
-        const { message } = body;
-
-        expect(status).toEqual(400);
-        expect(message).toEqual('Cannot add a duplicate link, please update the url and try again.');
 
         done();
       } catch (error) {
@@ -433,16 +433,26 @@ const linkTests = () => {
           .set('authorization', token);
 
         const { links } = body;
-        const [firstLink, secondLink] = links;
+        const [
+          { category: firstCategory, links: firstSetOfLinks },
+          { category: secondCategory, links: secondSetOfLinks },
+        ] = links;
+
+        const [firstLink] = firstSetOfLinks;
+        const [secondLink] = secondSetOfLinks;
 
         expect(status).toEqual(200);
         expect(links).toHaveLength(2);
+
+        expect(firstCategory).toEqual('Entertainment');
+        expect(firstSetOfLinks).toHaveLength(1);
         expect(firstLink.url).toEqual('https://netflix.com');
         expect(firstLink.title).toEqual('Netflix');
-        expect(firstLink.category).toEqual('Entertainment');
+
+        expect(secondCategory).toEqual('Design');
+        expect(secondSetOfLinks).toHaveLength(1);
         expect(secondLink.url).toEqual('https://adobe.com');
         expect(secondLink.title).toEqual('Adobe');
-        expect(secondLink.category).toEqual('Design');
 
         done();
       } catch (error) {
