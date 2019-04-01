@@ -20,7 +20,6 @@ exports.up = knex =>
       .notNullable();
 
     table.unique('linkId');
-    table.unique('url');
   });
 
 exports.down = knex => knex.schema.dropTable('links');
