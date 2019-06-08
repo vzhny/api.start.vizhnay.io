@@ -17,7 +17,7 @@
     "heroku-postbuild": "export YARN_PRODUCTION=true; export NODE_ENV=production;"
   },
   "engines": {
-    "yarn": "1.15.0"
+    "yarn": "1.16.0"
   },
   "main": "lib/server.js",
   "repository": "https://github.com/vzhny/api.start.vizhnay.io",
